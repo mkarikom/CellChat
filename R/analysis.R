@@ -2167,7 +2167,7 @@ subsetCommunication_internal <- function(net, LR, cells.level, slot.name = "net"
 #' @examples
 netAnalysis_signalingRole_network <- function(object, signaling, slot.name = "netP", measure = c("outdeg","indeg","flowbet","info"), measure.name = c("Sender","Receiver","Mediator","Influencer"),
                                     color.use = NULL, color.heatmap = "BuGn",
-                                    width = 6.5, height = 1.4, font.size = 8, font.size.title = 10, cluster.rows = FALSE, cluster.cols = FALSE) {
+                                    width = 6.5, height = 1.4, font.size = 8, font.size.title = 10, cluster.rows = FALSE, cluster.cols = FALSE, return.last= FALSE, column.title=NULL) {
   if (length(slot(object, slot.name)$centr) == 0) {
     stop("Please run `netAnalysis_computeCentrality` to compute the network centrality scores! ")
   }
@@ -2196,17 +2196,34 @@ netAnalysis_signalingRole_network <- function(object, signaling, slot.name = "ne
                                         show_legend = FALSE, show_annotation_name = FALSE,
                                         simple_anno_size = grid::unit(0.2, "cm"))
 
-    ht1 = Heatmap(mat, col = color.heatmap.use, na_col = "white", name = "Importance",
-                  bottom_annotation = col_annotation,
-                  cluster_rows = cluster.rows,cluster_columns = cluster.rows,
-                  row_names_side = "left",row_names_rot = 0,row_names_gp = gpar(fontsize = font.size),column_names_gp = gpar(fontsize = font.size),
-                  width = unit(width, "cm"), height = unit(height, "cm"),
-                  column_title = paste0(names(centr[i]), " signaling pathway network"),column_title_gp = gpar(fontsize = font.size.title),column_names_rot = 45,
-                  heatmap_legend_param = list(title = "Importance", title_gp = gpar(fontsize = 8, fontface = "plain"),title_position = "leftcenter-rot",
-                                              border = NA, at = c(round(min(mat, na.rm = T), digits = 1), round(max(mat, na.rm = T), digits = 1)),
-                                              legend_height = unit(20, "mm"),labels_gp = gpar(fontsize = 8),grid_width = unit(2, "mm"))
-    )
+    if(!is.null(column.title)){
+      ht1 = Heatmap(mat, col = color.heatmap.use, na_col = "white", name = "Importance",
+                    bottom_annotation = col_annotation,
+                    cluster_rows = cluster.rows,cluster_columns = cluster.rows,
+                    row_names_side = "left",row_names_rot = 0,row_names_gp = gpar(fontsize = font.size),column_names_gp = gpar(fontsize = font.size),
+                    width = unit(width, "cm"), height = unit(height, "cm"),
+                    column_title = paste0(names(centr[i]), " ",column.title),column_title_gp = gpar(fontsize = font.size.title),column_names_rot = 45,
+                    heatmap_legend_param = list(title = "Importance", title_gp = gpar(fontsize = 8, fontface = "plain"),title_position = "leftcenter-rot",
+                                                border = NA, at = c(round(min(mat, na.rm = T), digits = 1), round(max(mat, na.rm = T), digits = 1)),
+                                                legend_height = unit(20, "mm"),labels_gp = gpar(fontsize = 8),grid_width = unit(2, "mm"))
+      )
+    }else{
+      ht1 = Heatmap(mat, col = color.heatmap.use, na_col = "white", name = "Importance",
+                    bottom_annotation = col_annotation,
+                    cluster_rows = cluster.rows,cluster_columns = cluster.rows,
+                    row_names_side = "left",row_names_rot = 0,row_names_gp = gpar(fontsize = font.size),column_names_gp = gpar(fontsize = font.size),
+                    width = unit(width, "cm"), height = unit(height, "cm"),
+                    column_title = paste0(names(centr[i]), " signaling pathway network"),column_title_gp = gpar(fontsize = font.size.title),column_names_rot = 45,
+                    heatmap_legend_param = list(title = "Importance", title_gp = gpar(fontsize = 8, fontface = "plain"),title_position = "leftcenter-rot",
+                                                border = NA, at = c(round(min(mat, na.rm = T), digits = 1), round(max(mat, na.rm = T), digits = 1)),
+                                                legend_height = unit(20, "mm"),labels_gp = gpar(fontsize = 8),grid_width = unit(2, "mm"))
+      )
+    }
+    
     draw(ht1)
+  }
+  if(return.last){
+    return(list(mat=mat,ht=ht1))
   }
 }
 
