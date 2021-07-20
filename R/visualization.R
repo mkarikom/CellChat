@@ -487,7 +487,6 @@ netVisual_aggregate <- function(object, signaling, signaling.name = NULL, color.
     pval <- replicate(1, pval, simplify="array")
   }
  # prob <-(prob-min(prob))/(max(prob)-min(prob))
-
   if (layout == "hierarchy") {
     prob.sum <- apply(prob, c(1,2), sum)
    # prob.sum <-(prob.sum-min(prob.sum))/(max(prob.sum)-min(prob.sum))
